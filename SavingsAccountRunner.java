@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -32,7 +33,7 @@ public class SavingsAccountRunner {
 				System.out.println("=============================");
 				System.out.println("1. Deposit");
 				System.out.println("2. Withdraw");
-				System.out.println("3. View Monthly Interest Rate");
+				System.out.println("3. View Transaction History");
 				System.out.println("4. View Account Details");
 				System.out.println("5. Exit");
 				System.out.print("Enter your selection: ");
@@ -51,13 +52,20 @@ public class SavingsAccountRunner {
 				handleWithdraw(input, savingsAccount1);
 				break;
 			case 3:
-				System.out.printf("\nMonthly Interest Amount: $%.2f%n%n", savingsAccount1.getMonthlyIntRate());
+				System.out.println("\nYour transaction history: ");
+				System.out.printf("%-35s%-15s%-15s%-15s%n", "Date", "Type", "Amount", "Balance");
+				ArrayList<Transaction> transactions = savingsAccount1.getTransactions();
+				for (int i = 0; i < transactions.size(); i++) {
+					Transaction t = (Transaction) transactions.get(i);
+					System.out.printf("%-35s%-15s$%-14.2f$%-14.2f%n%n", t.getTimestamp(), t.getType(), t.getAmount(), t.getBalanceAfter());
+
+				}
 				break;
 			case 4:
 				System.out.println("\nAccount Nickname: " + savingsAccount1.getId());
 				System.out.println("Account Creation Date/Time: " + savingsAccount1.getDateEstablished());
 				System.out.printf("Balance: $%.2f%n", savingsAccount1.getBalance());
-				System.out.printf("Monthly Interest Amount: $%.2f%n%n", savingsAccount1.getMonthlyIntRate());
+				System.out.printf("Monthly Interest Amount: $%.2f%n%n", savingsAccount1.getMonthlyInterestAmount());
 
 				break;
 			case 5:

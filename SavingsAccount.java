@@ -1,11 +1,13 @@
 import java.util.Date;
+import java.util.ArrayList;
 
 public class SavingsAccount {
 	// Declare instance variables
 	private String id;
 	private double balance = 0;
 	private double annualInterestRate;
-	private Date dateEstablished = new Date();
+	private final Date dateEstablished = new Date();
+	private ArrayList<Transaction> transactions = new ArrayList();
 
 	public SavingsAccount() { // No-arg constructor
 
@@ -21,6 +23,7 @@ public class SavingsAccount {
 			throw new IllegalArgumentException("Deposit amount must be greater than 0.");
 		}
 		balance += amount; // Add money to a balance
+		transactions.add(new Transaction('D', amount, balance)); // Register a transaction
 	}
 
 	public void withdraw(double amount) {
@@ -32,9 +35,10 @@ public class SavingsAccount {
 			throw new IllegalArgumentException("Insufficient funds. You only have $" + String.format("%.2f", balance));
 		}
 		balance -= amount; // Withdraw money from a balance
+		transactions.add(new Transaction('W', amount, balance)); // Register a transaction
 	}
 
-	public double getMonthlyIntRate() { // Calculate interest rate
+	public double getMonthlyInterestAmount() { // Calculate interest amount
 		double monthlyInterestRate = (annualInterestRate / 100) / 12;
 		return balance * monthlyInterestRate;
 	}
@@ -64,7 +68,7 @@ public class SavingsAccount {
 	}
 
 	public Date getDateEstablished() {
-		return dateEstablished;
+		return new Date(dateEstablished.getTime());
 	}
 
 	@Override
@@ -76,4 +80,7 @@ public class SavingsAccount {
 				+ dateEstablished.toString();
 	}
 
+	public ArrayList<Transaction> getTransactions() {
+		return transactions;
+	}
 }
