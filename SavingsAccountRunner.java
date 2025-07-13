@@ -1,12 +1,11 @@
 import java.util.Scanner;
 
 /**
- * Name: Artem Horbunov 
- * Date: 6/27/25 
- * File: SavingsAccountRunner.java
- * Description: A simple banking application that creates a new user using 
- * constructors. A user can deposit, view monthly interest rate and account details. 
- * Those are achieved by using accessors and mutators to change instance variables of a class.
+ * Name: Artem Horbunov Date: 6/27/25 File: SavingsAccountRunner.java
+ * Description: A simple banking application that creates a new user using
+ * constructors. A user can deposit, view monthly interest rate and account
+ * details. Those are achieved by using accessors and mutators to change
+ * instance variables of a class.
  */
 
 public class SavingsAccountRunner {
@@ -28,51 +27,82 @@ public class SavingsAccountRunner {
 
 		do {
 			if (showMenu) { // Unless wrong input entered later on in switch show menu
-				System.out.println("=============================\n" + "=       OPTIONS BELOW       =	    \n"
-						+ "=============================\n" + "1. Deposit\n" + "2. View Monthly Interest Rate\n"
-						+ "3. View Account Details\n" + "4. Exit\n" + "Enter your selection");
+				System.out.println("=============================");
+				System.out.println("=       OPTIONS BELOW       =");
+				System.out.println("=============================");
+				System.out.println("1. Deposit");
+				System.out.println("2. Withdraw");
+				System.out.println("3. View Monthly Interest Rate");
+				System.out.println("4. View Account Details");
+				System.out.println("5. Exit");
+				System.out.print("Enter your selection: ");
 			}
 			option = input.nextInt(); // Get user input for menu
 			showMenu = true; // Show menu after a right input was entered
 			switch (option) {
 			case 1:
-				boolean negativeAmount = false;
-				do {
-					System.out.println("Enter your deposit amount: ");
-					double depositAmount = input.nextDouble();
-					if (depositAmount > 0) { // Deposit money if user input > 0
-						savingsAccount1.deposit(depositAmount);
-						negativeAmount = false;
-						System.out.printf("New Balance: $%.2f%n", savingsAccount1.getBalance());
-					} else { // Do not deposit negative amount
-						negativeAmount = true;
-						System.out.println("You entered a negative amount. Try again");
-					}
-				} while (negativeAmount); // Until user inputs a positive amount keep asking to re enter
+				handleDeposit(input, savingsAccount1);
 				break;
 			case 2:
-				System.out.printf("Monthly Interest Amount: $%.2f%n", savingsAccount1.getMonthlyIntRate());
+				if (savingsAccount1.getBalance() == 0) {
+					System.out.println("\nYou have no funds available to withdraw, deposit some money.\n");
+					break;
+				}
+				handleWithdraw(input, savingsAccount1);
 				break;
 			case 3:
-				System.out.println("Account Nickname: " + savingsAccount1.getId());
-				System.out.println("Account Creation Date/Time: " + savingsAccount1.getDateEstablished());
-				System.out.printf("Balance: $%.2f%n", savingsAccount1.getBalance());
-				System.out.printf("Monthly Interest Amount: $%.2f%n", savingsAccount1.getMonthlyIntRate());
-
+				System.out.printf("\nMonthly Interest Amount: $%.2f%n%n", savingsAccount1.getMonthlyIntRate());
 				break;
 			case 4:
-				inMenu = false; // Break out of the main program loop
-				System.out.println("Thank you - Goodbye!");
+				System.out.println("\nAccount Nickname: " + savingsAccount1.getId());
+				System.out.println("Account Creation Date/Time: " + savingsAccount1.getDateEstablished());
+				System.out.printf("Balance: $%.2f%n", savingsAccount1.getBalance());
+				System.out.printf("Monthly Interest Amount: $%.2f%n%n", savingsAccount1.getMonthlyIntRate());
+
+				break;
+			case 5:
+				inMenu = false; // Keep the loop going until user exits by choosing option 5
+				System.out.println("\nThank you - Goodbye!");
 				break;
 
 			default:
-				System.out.println("INVALID SELECTION - TRY AGAIN!");
+				System.out.print("INVALID SELECTION - TRY AGAIN: ");
 				showMenu = false; // Don't show menu after wrong input
 				break;
 			}
 		} while (inMenu); // Keep the loop going until user exits by choosing option 4
-		
+
 		input.close(); // Close scanner to eliminate resource leaks.
+	}
+
+	public static void handleDeposit(Scanner input, SavingsAccount account) {
+		boolean isValid = true;
+		do {
+			System.out.print("Enter your deposit amount: ");
+			double depositAmount = input.nextDouble();
+			try { // Deposit money if user input > 0
+				account.deposit(depositAmount);
+				System.out.printf("\nNew Balance: $%.2f%n%n", account.getBalance());
+				isValid = false;
+			} catch (IllegalArgumentException e) { // Do not deposit negative amount
+				System.out.println(e.getMessage());
+			}
+		} while (isValid); // Until user inputs a positive amount keep asking to re enter
+	}
+
+	public static void handleWithdraw(Scanner input, SavingsAccount account) {
+		boolean isValid = true;
+		do {
+			System.out.print("Enter an amount you would like to withdraw: ");
+			double withdrawAmount = input.nextDouble();
+			try { // Withdraw money if input is valid
+				account.withdraw(withdrawAmount);
+				System.out.printf("\nNew Balance: $%.2f%n%n", account.getBalance());
+				isValid = false;
+			} catch (IllegalArgumentException e) { // Cannot withdraw negative amount
+				System.out.println(e.getMessage());
+			}
+		} while (isValid); // Until user inputs a positive amount keep asking to re enter
 	}
 
 }

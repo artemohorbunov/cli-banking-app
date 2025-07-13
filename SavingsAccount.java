@@ -17,7 +17,21 @@ public class SavingsAccount {
 	}
 
 	public void deposit(double amount) {
+		if (amount <= 0) {
+			throw new IllegalArgumentException("Deposit amount must be greater than 0.");
+		}
 		balance += amount; // Add money to a balance
+	}
+
+	public void withdraw(double amount) {
+		if (balance == 0) {
+			throw new IllegalArgumentException("You do not have any funds to withdraw.");
+		} else if (amount <= 0) {
+			throw new IllegalArgumentException("Withdraw amount must be greater than 0.");
+		} else if (amount > balance) {
+			throw new IllegalArgumentException("Insufficient funds. You only have $" + String.format("%.2f", balance));
+		}
+		balance -= amount; // Withdraw money from a balance
 	}
 
 	public double getMonthlyIntRate() { // Calculate interest rate
